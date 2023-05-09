@@ -1,0 +1,13 @@
+package dependancy;
+
+public interface TV {
+
+	void powerOn();
+
+	void powerOff();
+
+	void volumUp();
+
+	void volumDown();
+
+}

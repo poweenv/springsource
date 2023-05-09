@@ -1,0 +1,22 @@
+package com.spring.dependency;
+
+public class AppleSpeaker implements Speaker {
+
+	
+	
+	public AppleSpeaker() {
+		System.out.println("SonySpeaker 인스턴스 생성");
+	}
+	@Override
+	public void volumUp() {
+		System.out.println("SonySpeaker Volum Up");
+
+	}
+
+	@Override
+	public void volumDown() {
+		System.out.println("SonySpeaker Volum Down");
+
+	}
+
+}
