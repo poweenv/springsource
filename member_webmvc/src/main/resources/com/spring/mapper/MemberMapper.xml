@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.spring.mapper.MemberMapper">
+	
+	<!-- login : userid,password 일치 시 userid, name 조회 -->
+	
+	<select id="login" resultType="com.spring.domain.AuthDTO">
+		select userid,name from membertbl 
+		where userid=#{userid}
+	</select>
+	
+	<insert id="insert">
+		insert into membertbl(userid,name,password,gender,email)
+		values(#{userid},#{name},#{password},#{gender},#{email})	
+	</insert>
+	
+	<!-- 암호화된 비밀번호 가져오기 -->
+	<select id="getPass" resultType="java.lang.String">
+		select password from membertbl
+		where userid=#{userid}
+	</select>
+	
+	<!-- 중복아이디 체크 -->
+	<select id="dupId" resultType="java.lang.Integer">
+		select count(*) from membertbl where userid=#{userid}
+	</select>
+	<!--  중복아이디 체크 2번째 방법
+	<select id="dupId" resultType="java.lang.String">
+		select userid from membertbl where userid=#{userid}
+	</select> -->
+	
+	<delete id="leave">
+		delete from membertbl where userid=#{userid} 
+	</delete>
+	
+	<update id="update">
+		update membertbl set password=#{newPassword} where userid=#{userid}
+	</update>
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+

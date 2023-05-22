@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.spring.mapper.BookMapper">
+	<!-- id 명은 Mapper inertface 메소드 명과 일치 
+	
+			select 작성 시 resulttype 꼭 필요
+	-->
+	
+	
+	<select id="getRows" resultType="com.spring.domain.BookDTO">
+		select code, title,writer, price from booktbl
+	</select>
+	
+	<insert id="insert">
+		insert into booktbl(code, title, writer, price,description) values(#{code},#{title},#{writer},#{price},#{description})
+	</insert>
+	
+	<select id="read" resultType="com.spring.domain.BookDTO">
+		select * from booktbl where code=#{code}
+	</select>
+
+	<update id="update">
+		update booktbl set price=#{price} where code=#{code}
+	</update>
+	
+	<delete id="delete">
+		delete from booktbl where code=#{code}
+	</delete>
+	<select id="search" resultType="com.spring.domain.BookDTO">
+		<!-- 
+			조건이 criteria 변수에 들어있는 상황
+		select * from booktbl where writer=#{writer}
+		select * from booktbl where title=#{title} -->
+		
+	 	select code,title,writer,price from booktbl where
+		
+		<if test="criteria == 'writer'.toString()">
+			writer =#{keyword}
+		</if>
+		<if test="criteria == 'title'.toString()">
+			title like '%'||#{keyword}||'%'
+		</if> 
+		
+		<!-- select code,title,writer,price from booktbl where ${criteria} like '%'||#{keyword}||'%'
+		 -->
+	</select>
+	
+	
+	
+	
+</mapper>
