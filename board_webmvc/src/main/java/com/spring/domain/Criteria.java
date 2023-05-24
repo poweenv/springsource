@@ -20,11 +20,14 @@ public class Criteria {
 		this(1,10);
 	}
 	
-	public Criteria(int pageNum, int amount) {
+	public Criteria(int page, int amount) {
 		super();
 		this.page = page;
 		this.amount = amount;
 	}
 
+	public String[] getTypeArr() {
+		return type ==null ? new String [] {} : type.split("");
+	}
 	
 }

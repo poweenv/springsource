@@ -53,6 +53,8 @@ C:\source\springsource\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\349
 \mybatis\src\main\java
 C:\source\springsource\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\2841553433.index
 \book_webmvc\src\main\java
+C:\source\springsource\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\3082592642.index
+\rest\src\main\java
 C:\source\springsource\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\2321537685.index
 \ch8_log\src\main\java
 C:\source\springsource\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\3621039224.index

@@ -1,11 +1,13 @@
 package com.spring.controller;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -22,18 +24,19 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class BoardController {
 
-	//전체 리스트 보여주기 컨트롤러 작성 : list.jsp 보여주기
 	@Autowired
 	private BoardService service;
 	
+	//전체 리스트 보여주기 컨트롤러 작성 : list.jsp 보여주기
 	@GetMapping("/list")
-	public void listGet(Model model,Criteria cri) {
+	public void listGet(Model model,@ModelAttribute("cri") Criteria cri) {
 		log.info("전체 리스트 보여주기");
+		log.info("type"+Arrays.toString(cri.getTypeArr()));
 		//service.getList
 		// 사용자가 요청한 번호에 맞는 게시물 목록 요청
 		List<BoardDTO> list = service.getList(cri);
 		//전체 게시물 숫자
-		int total = service.getTotalCnt();
+		int total = service.getTotalCnt(cri);
 		
 		model.addAttribute("list", list);
 		model.addAttribute("pageDTO", new PageDTO(cri, total));
@@ -45,11 +48,14 @@ public class BoardController {
 	}
 	
 	@PostMapping("/register")
-	public String insert(BoardDTO dto,RedirectAttributes rttr) {
+	public String insert(BoardDTO dto,RedirectAttributes rttr,Criteria cri) {
 		log.info("게시글 작성");
 		if(service.insert(dto)) {
 			log.info(" 글 번호 :"+dto.getBno());
 			rttr.addFlashAttribute("result", dto.getBno());
+			rttr.addAttribute("page", cri.getPage());
+			rttr.addAttribute("amount", cri.getAmount());
+
 			return "redirect:/board/list";
 		}
 		return "redirect:/board/register";
@@ -57,7 +63,7 @@ public class BoardController {
 	//http://localhost:8080/board/read?bno=3
 	//http://localhost:8080/board/modify?bno=3
 	@GetMapping({"/read","/modify"})
-	public void readGet(int bno,Model model) {
+	public void readGet(int bno,Model model,@ModelAttribute("cri") Criteria cri) {
 		log.info("게시글 조회 "+bno);
 		
 		//bno 해당하는 배용 가져오기
@@ -65,23 +71,34 @@ public class BoardController {
 		model.addAttribute("dto", dto);
 	}
 	@PostMapping("/modify")
-	public String modifyPost(BoardDTO dto,RedirectAttributes rttr) {
+	public String modifyPost(BoardDTO dto,RedirectAttributes rttr,Criteria cri) {
 		log.info("modify ");
 		
 		rttr.addFlashAttribute("result", "수정이 완료되었습니다");
+		rttr.addAttribute("amount", cri.getAmount());
+		rttr.addAttribute("page", cri.getPage());
+		
+		rttr.addAttribute("type", cri.getType());
+		rttr.addAttribute("keyword", cri.getKeyword());
+		
 		if(service.modify(dto)) {
 			return "redirect:/board/list";
-			
 		}
 		return "/board/read";
 	}
 
 	@GetMapping("/remove")
-	public String removeGet(int bno,RedirectAttributes rttr) {
+	public String removeGet(int bno,RedirectAttributes rttr, Criteria cri) {
 		log.info("삭제"+ bno);
 		service.remove(bno);
 		
 		rttr.addFlashAttribute("result", "삭제가 완료되었습니다");
+		// 페이지 나누기 정보 주소줄에 같이 보내기
+		rttr.addAttribute("amount", cri.getAmount());
+		rttr.addAttribute("page", cri.getPage());
+		// 검색 정보 주소줄에 보내기
+		rttr.addAttribute("type", cri.getType());
+		rttr.addAttribute("keyword", cri.getKeyword());
 		return "redirect:/board/list";
 	}
 	
