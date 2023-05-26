@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.spring.domain.Criteria;
 import com.spring.domain.ReplyDTO;
+import com.spring.domain.ReplyPageDTO;
 import com.spring.service.ReplyService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -48,12 +49,12 @@ public class ReplyController {
 	}
 	//http://localhost:8080/replies/bno
 	@GetMapping(value="/pages/{bno}/{page}",produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<ReplyDTO>> rep(@PathVariable("bno") int bno,@PathVariable("page") int page){
+	public ResponseEntity<ReplyPageDTO> rep(@PathVariable("bno") int bno,@PathVariable("page") int page){
 		log.info("댓글 조회");
 		
 		Criteria cri = new Criteria(page, 10);
 		
-		return new ResponseEntity<List<ReplyDTO>>(reService.selReply(bno,cri), HttpStatus.OK);
+		return new ResponseEntity<ReplyPageDTO>(reService.selReply(bno,cri), HttpStatus.OK);
 	}
 	//http://localhost:8080/replies/rno + PUT + 수정데이터(json)
 	@PutMapping(value="/{rno}",produces = MediaType.APPLICATION_JSON_VALUE)

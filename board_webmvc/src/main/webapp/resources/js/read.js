@@ -17,16 +17,82 @@ document.querySelector(".btn-secondary").addEventListener("click", () => {
   form.submit();
 });
 
+let page = 1;
+
 // 댓글 보여줄 영역 가져오기
 let chat = document.querySelector(".chat");
-showList(1);
+showList(page);
 
-function showList(page) {
+function showReplyPage(total) {
+  let endPage = Math.ceil(page / 10.0) * 10;
+  let startPage = endPage - 9;
+  let prev = startPage != 1;
+  let next = false;
+
+  if (endPage * 10 >= total) {
+    endPage = Math.ceil(total / 10.0);
+  }
+  if (endPage * 10 < total) {
+    next = true;
+  }
+  let str = "<ul class='pagination justify-content-center'>";
+  if (prev) {
+    str +=
+      "<li class='page-item'><a class='page-link' href=''" +
+      (startPage - 1) +
+      ">Previous</a></li>";
+  }
+
+  for (let i = startPage; i <= endPage; i++) {
+    let active = page == i ? "active" : "";
+    str +=
+      "<li class='page-item " +
+      active +
+      " '><a class='page-link' href='" +
+      i +
+      "'>" +
+      i +
+      "</a></li>";
+  }
+  if (next) {
+    str +=
+      "<li class='page-item'><a class='page-link' href=''" +
+      (endPage + 1) +
+      ">Next</a></li>";
+  }
+  str += "</ul>";
+  document.querySelector(".card-footer").innerHTML = str;
+}
+
+// 댓글 페이지 나누기 숫자 클릭 시 a 태그 동작 중지
+// href 에 있는 값 가져오기
+// showList(가져온 값)
+
+document.querySelector(".card-footer").addEventListener("click", (e) => {
+  e.preventDefault();
+  page = e.target.getAttribute("href");
+  showList(page);
+});
+
+function showList(pageNum) {
   // 현재 게시물에 대한 댓글 가져오기
   //page : page||1 => page변수값이 존재하면 page 값 사용하고 없으면 1
-  replyService.getList({ bno: bno, page: page || 1 }, (result) => {
-    //console.log(result);
+  replyService.getList({ bno: bno, page: page || 1 }, (total, result) => {
+    console.log("read.js에서 학인");
+    console.log(total);
+    console.log(result);
+    //console.log(result)인
     // 도착한 데이터를 화면에 보여주기
+
+    //page가 -1일때
+    if (pageNum == -1) {
+      //마지막 페이지 알아내기
+      page = Math.ceil(total / 10.0);
+
+      showList(page);
+      return;
+    }
+
     if (result == null || result.length == 0) {
       chat.innerHTML = "";
       return;
@@ -46,9 +112,14 @@ function showList(page) {
         "</small>";
       str += "</div>";
       str += "<p>" + result[idx].reply + "</p>";
+      str += "<div class='btn-group btn-group-sm'>";
+      str += "<button class='btn btn-warning' type='button'>수정</button>";
+      str += "<button class='btn btn-danger' type='button'>삭제</button>";
+      str += "</div>";
       str += "</li> ";
     }
     chat.innerHTML = str;
+    showReplyPage(total); // 현 게시물에 달린 댓글 총 숫자를 이용한 페이지 나누기 함수 호출
   });
 }
 
@@ -67,11 +138,72 @@ document.querySelector("#replyForm").addEventListener("submit", (e) => {
       //댓글 작성 부분 지우기
       reply.value = "";
       replyer.value = "";
+
+      // 새글 작성시  -1 호출
+      showList(-1);
     }
   );
 });
 
-// 댓글 하나 가져오기
-replyService.get(7, (result) => {
-  console.log(result);
+// 수정 버튼 클릭시
+// document.querySelectorAll("btn-warning").forEach((updateBtn) =>{
+//   updateBtn.addEventListener("click",()=>{
+
+//   })
+// })
+// 이벤트 전파 : 부모한테 이벤트를 걸어서 자식까지 이벤트가 걸리도록 => ul 에 이벤트 작성
+
+chat.addEventListener("click", (e) => {
+  //어느 li에서 이벤트가 발생했느냐?
+  // e.target : 이벤트 발생 대상
+  // 이벤트 발생 대상을 감싸고 있는 부모 li 찾기
+  let li = e.target.closest("li");
+  console.log("이벤트 발생", li);
+
+  //rno 가져오기 (data-* 속성값 가져오기: dataset)
+  let rno = li.dataset.rno;
+  console.log("rno", rno);
+
+  // 수정버튼이 클릭되면 모달창 띄우기
+  if (e.target.classList.contains("btn-warning")) {
+    // 댓글 하나 가져오기
+    replyService.get(rno, (result) => {
+      console.log(result);
+
+      // modal 창 안에 가져온 내용 가져오기
+
+      document.querySelector(".modal-body #rno").value = result.rno;
+      document.querySelector(".modal-body #reply").value = result.reply;
+      document.querySelector(".modal-body #replyer").value = result.replyer;
+    });
+    $("#replyModal").modal("show");
+  } else if (e.target.classList.contains("btn-danger")) {
+    //삭제 버튼 클릭 시
+    replyService.remove(rno, (result) => {
+      if (result === "success") {
+        alert("delete success");
+        showList(page);
+      }
+    });
+  }
 });
+
+// modal 창에서 수정버튼이 클릭되면 댓글 수정
+document
+  .querySelector(".modal-footer .btn-primary")
+  .addEventListener("click", () => {
+    const updateReply = {
+      // modal 창안에 있는 rno,reply 가져온 후 자바스크립트 객체 생성
+      rno: document.querySelector(".modal-body #rno").value,
+      reply: document.querySelector(".modal-body #reply").value,
+    };
+    // replyService.update 호출
+    replyService.update(updateReply, (result) => {
+      alert(result);
+      //모달 창 닫기
+      if (result === "success") {
+        $("#replyModal").modal("hide");
+        showList(page);
+      }
+    });
+  });

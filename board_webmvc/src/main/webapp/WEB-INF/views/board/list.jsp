@@ -32,6 +32,9 @@
 			</div>
 		</form>
 	</div>
+	
+	
+	
 	<!-- 검색 종료 -->
 	<div class="pb-2 px-2">
 		<select name="amount" id="amount" class="form-control">
@@ -60,7 +63,7 @@
 		<c:forEach var="dto" items="${list}">
 			<tr>
 				<th scope="row">${dto.bno}</th>
-				<td><a href="${dto.bno}" class="move">${dto.title}</a></td>
+				<td><a href="${dto.bno}" class="move">${dto.title}</a> <strong>[${dto.replyCnt}]</strong></td>
 				<td>${dto.writer}</td>
 				<td><fmt:formatDate pattern="yyyy-MM-dd HH:mm" value="${dto.regDate}" /></td>
 				<td><fmt:formatDate pattern="yyyy-MM-dd HH:mm" value="${dto.updateDate}" /></td>
