@@ -31,5 +31,7 @@
 			<beans:ref bean="auth"/>
 		</interceptor>
 	</interceptors> -->
-	
+	<!--  commons 클래스 객체 선언 -->
+	<beans:bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+	</beans:bean>
 </beans:beans>
