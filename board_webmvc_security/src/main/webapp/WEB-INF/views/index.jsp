@@ -1,42 +1,19 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-
-<%@ taglib uri="http://www.springframework.org/security/tags" prefix="security" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%@ include file="include/header.jsp"%>
 
 <!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+	<h1 class="h3 mb-0 text-gray-800">Board</h1>
+</div>
 <div id="content">
-
-	<h3>메인 페이지</h3>
-	
-	<!-- 인증(로그인)이 되지 않았다면 : 부여된 권한에 따라 접근할 수 있는 페이지가 다르다면 -->
-	<security:authorize access="!isAuthenticated()">
-	<div class="row">
-		<div class="col">
-			<a href="/security/login">로그인</a>
-		</div>
-	</div>
-	</security:authorize>
-
-	<security:authorize access="isAuthenticated()">
-	<div class="row">
-		<div class="col">
-			<a href="/security/userpage">유저페이지</a>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col">
-			<a href="/security/adminpage">관리자페이지</a>
-		</div>
-	</div>
-
-	<div class="row">
-		<form action="/logout" method="post">
-			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-			<button class="btn btn-info" type="submit">로그아웃</button>
-		</form>
-	</div>
-
-	</security:authorize>
+<%--get 방식으로 주소줄에  4개의 변수의 값이 따라감
+	-page=1
+	-amount=10
+	-type=
+	-keyword=
+ --%>
+	<a href="/board/list?page=1&amount=10&type=&keyword=">전체 리스트 보기</a>
 </div>
 <%@ include file="include/footer.jsp"%>
 

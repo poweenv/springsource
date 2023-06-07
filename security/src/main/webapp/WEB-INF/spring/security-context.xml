@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+<!--  인증 : 사용자가 누구인지 확인하는 과정 
+			아이디/암호를 이용해서 인증을 주로 처리(폼 로그인 방식)
+			-->
+
+	<bean id="customLoginSuccessHandler" class="com.spring.handler.CustomLoginSuccessHandler"/>
+	<bean id="customAccessDeniedHandler" class="com.spring.handler.CustomAccessDeniedHandler"/>
+	
+	
+	<bean id="encoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
+	
+	<!-- rember-me 활성화
+		data-source-ref="ds" : 토큰 값을 db에 저장
+		token-validity-seconds : 토큰 유효 시간
+	 -->
+
+	<security:http>
+	<security:remember-me data-source-ref="ds" token-validity-seconds="604800"/>
+	
+		<!-- 폼 로그인 인증 방식을 선택 
+		     login-page : 컨트롤러 경로(로그인 폼 페이지)
+		     authentication-failure-url : 로그인 정보가 틀렸을 때 컨트롤러 경로
+		     authentication-success-handler-ref : 로그인 성공한 이후 처리(객체 사용)
+		-->
+		<security:form-login login-page="/security/login" authentication-failure-url="/security/login-error" 
+				authentication-success-handler-ref="customLoginSuccessHandler"/>
+				
+		<!-- 403 페이지 대신에 커스텀 접근 제한 페이지 
+		     error-page : 컨트롤러 경로
+		     ref : 빈 아이디 
+		     
+		     error-page="/security/access-denied"		     
+		-->		
+		<security:access-denied-handler ref="customAccessDeniedHandler"/>
+		<!-- 
+			logout post 시 해야 하는 작업
+		 -->		
+		<security:logout invalidate-session="true"  delete-cookies="remember-me,JSESSION_ID"/>
+		
+		<!-- 특정경로를 요청 시 적절한 권한 여부를 확인한 후 로그인 페이지로 이동, 403 페이지 -->
+		<!-- <security:intercept-url pattern="/security/userpage" access="hasRole('ROLE_USER')"/>
+		<security:intercept-url pattern="/security/adminpage" access="hasRole('ROLE_ADMIN')"/> -->
+	</security:http>
+	
+	<!-- 비밀번호는 무조건 암호화 상태여야 함 :  {noop} => 암호화 하지 말기
+	
+				인 메모리 인증방식 - 테스트 시	 -->
+<!-- 	<security:authentication-manager>
+		<security:authentication-provider>
+			<security:user-service>
+				<security:user name="user1"  password="{noop}user1"  authorities="ROLE_USER"/>
+				<security:user name="admin"  password="{noop}admin"  authorities="ROLE_USER,ROLE_ADMIN"/>
+			</security:user-service>
+		</security:authentication-provider>
+	</security:authentication-manager> -->
+	<security:authentication-manager>
+		<security:authentication-provider user-service-ref="customUserDetailService">
+			<security:password-encoder ref="encoder"/>
+		</security:authentication-provider>
+	</security:authentication-manager>
+	
+</beans>
