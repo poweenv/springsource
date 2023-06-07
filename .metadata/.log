@@ -10012,3 +10012,29 @@ This warning can be switched off on the Team > Git > Confirmations and Warnings 
 
 !ENTRY org.eclipse.m2e.logback.appender 2 0 2023-06-07 11:03:56.118
 !MESSAGE Using platform encoding (MS949 actually) to copy filtered resources, i.e. build is platform dependent!
+
+!ENTRY org.eclipse.equinox.security 1 0 2023-06-07 11:19:46.071
+!MESSAGE New keyring password generated. 
+
+!ENTRY org.eclipse.egit.core 4 0 2023-06-07 11:19:46.488
+!MESSAGE An exception occurred during push on URI https://github.com/poweenv/springsource.git: https://github.com/poweenv/springsource.git: git-receive-pack not permitted on 'https://github.com/poweenv/springsource.git/'
+!STACK 0
+org.eclipse.jgit.errors.TransportException: https://github.com/poweenv/springsource.git: git-receive-pack not permitted on 'https://github.com/poweenv/springsource.git/'
+	at org.eclipse.jgit.transport.TransportHttp.connect(TransportHttp.java:692)
+	at org.eclipse.jgit.transport.TransportHttp.connect(TransportHttp.java:627)
+	at org.eclipse.jgit.transport.TransportHttp.openPush(TransportHttp.java:541)
+	at org.eclipse.jgit.transport.PushProcess.execute(PushProcess.java:127)
+	at org.eclipse.jgit.transport.Transport.push(Transport.java:1384)
+	at org.eclipse.egit.core.op.PushOperation.run(PushOperation.java:191)
+	at org.eclipse.egit.ui.internal.push.PushJob.performJob(PushJob.java:86)
+	at org.eclipse.egit.ui.internal.jobs.RepositoryJob.run(RepositoryJob.java:59)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+
+!ENTRY org.eclipse.egit.ui 4 0 2023-06-07 11:19:46.497
+!MESSAGE Can't connect to any repository: https://github.com/poweenv/springsource.git (https://github.com/poweenv/springsource.git: git-receive-pack not permitted on 'https://github.com/poweenv/springsource.git/')
+
+!ENTRY org.eclipse.m2e.logback.appender 2 0 2023-06-07 11:20:43.992
+!MESSAGE Using platform encoding (MS949 actually) to copy filtered resources, i.e. build is platform dependent!
+
+!ENTRY org.eclipse.m2e.logback.appender 2 0 2023-06-07 11:20:43.995
+!MESSAGE Using platform encoding (MS949 actually) to copy filtered resources, i.e. build is platform dependent!
