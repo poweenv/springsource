@@ -13,6 +13,7 @@
 		<security:form-login login-page="/member/login" 
 			authentication-failure-url="/member/login-error" authentication-success-handler-ref="loginHandler"/>
 		<security:logout logout-success-url="/"/>
+		<security:remember-me data-source-ref="ds" token-validity-seconds="604800"/>
 	</security:http>
 
 	<security:authentication-manager>
@@ -20,5 +21,7 @@
 			<security:password-encoder ref="encoder"/>
 		</security:authentication-provider>
 	</security:authentication-manager>
+
+
 
 </beans>
