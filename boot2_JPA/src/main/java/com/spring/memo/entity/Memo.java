@@ -13,7 +13,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
+//@Table(name="memos")
 @ToString@Getter
 @Setter
 @AllArgsConstructor
@@ -27,9 +27,9 @@ public class Memo {
 	// name : 임의로 이름 설정(필수) , squenceName : mem_seq.nextval, allocarionSize = 증가할 숫자
 	// @SequenceGenerator(name="mem_seq_gen",sequenceName = "mem_seq",allocationSize = 1)
 	
-	// GenerationType : 1) Auto : JPA 구현체가 자동으로 rngus, 2) IDENTITY
-	//					3) SEQUENCE : SequenceGenerator
-	//					4) 키 생성용 테이블 사용
+	// GenerationType : 1) Auto : JPA 구현체가 자동으로 rngus, 2) IDENTITY : 기본키 생성을 데이터베이스에 위임
+	//					3) SEQUENCE : SequenceGenerator 등록 후 사용
+	//					4) 키 생성용 테이블 사용 @TableGenerator 사용
 	
 	@GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "")
 	@Id
